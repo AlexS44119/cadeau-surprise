@@ -1,96 +1,4 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-<meta charset="UTF-8">
-<title>Découvre ton cadeau 🎁</title>
-
-<style>
-body{
-  font-family: Arial;
-  text-align:center;
-  background:#f5f5f5;
-}
-
-#scratch-container{
-  position:relative;
-  width:320px;
-  height:200px;
-  margin:auto;
-}
-
-canvas{
-  position:absolute;
-  width:100%;
-  height:100%;
-  border-radius:15px;
-}
-
-#question1, #question2, #result, #revealBtn{
-  display:none;
-  margin-top:20px;
-}
-
-button{
-  padding:10px 15px;
-  margin:8px;
-  border:none;
-  border-radius:8px;
-  cursor:pointer;
-  background:#4CAF50;
-  color:white;
-}
-
-button:hover{
-  background:#45a049;
-}
-
-img{
-  max-width:300px;
-  border-radius:12px;
-  margin-top:20px;
-}
-</style>
-</head>
-
-<body>
-
-<h2>Gratte pour découvrir la première question</h2>
-
-<div id="scratch-container">
-  <canvas id="scratch"></canvas>
-</div>
-
-<div id="question1">
-  <h3>Question 1 :</h3>
-  <p>Quelle est le sport que tu a fait et pour lequelle tu chanterais : [...] Le Rouge et Noir, l’Europe les jalouses
-C’est la couleur de l’unique vainqueur [...] ?</p>
-
-  <button onclick="checkQ1(false)">Perpignan</button>
-  <button onclick="checkQ1(true)">Stade Toulousain</button>
-  <button onclick="checkQ1(false)">Saint-Marin</button>
-</div>
-
-<div id="question2">
-  <h3>Question 2 :</h3>
-  <p>Si tu devais te faire monter en l'air, qu'elle serais le meilleur choix ?</p>
-
-  <button onclick="checkQ2(true)">Air Force One</button>
-  <button onclick="checkQ2(false)">Vincent Mc Doom</button>
-  <button onclick="checkQ2(false)">benoit saint denis</button>
-</div>
-
-<div id="revealBtn">
-  <button onclick="showGift()">🎁 Révéler le cadeau</button>
-</div>
-
-<div id="result">
-  <h2>Surprise !</h2>
-  <img src="cadeau.jpg">
-</div>
-
 <script>
-
-// ------- SCRATCH ---------
 
 const canvas = document.getElementById("scratch");
 const ctx = canvas.getContext("2d");
@@ -98,6 +6,7 @@ const ctx = canvas.getContext("2d");
 canvas.width = 320;
 canvas.height = 200;
 
+// couche grise
 ctx.fillStyle = "#999";
 ctx.fillRect(0,0,canvas.width,canvas.height);
 
@@ -106,24 +15,43 @@ ctx.font = "20px Arial";
 ctx.fillText("GRATTE ICI",100,110);
 
 let scratching = false;
+let revealed = false;
 
 canvas.addEventListener("mousedown", ()=> scratching = true);
 canvas.addEventListener("mouseup", ()=> scratching = false);
 
 canvas.addEventListener("mousemove", e=>{
-  if(!scratching) return;
+ if(!scratching) return;
 
-  ctx.globalCompositeOperation = "destination-out";
+ ctx.globalCompositeOperation = "destination-out";
 
-  ctx.beginPath();
-  ctx.arc(e.offsetX, e.offsetY, 20, 0, Math.PI*2);
-  ctx.fill();
+ ctx.beginPath();
+ ctx.arc(e.offsetX, e.offsetY, 20, 0, Math.PI*2);
+ ctx.fill();
+
+ checkScratch();
 });
 
-// afficher question après 2 secondes
-setTimeout(()=>{
- document.getElementById("question1").style.display="block";
-},2000);
+function checkScratch(){
+
+ if(revealed) return;
+
+ const pixels = ctx.getImageData(0,0,canvas.width,canvas.height);
+ let count = 0;
+
+ for(let i=0; i<pixels.data.length; i+=4){
+   if(pixels.data[i+3] === 0){
+     count++;
+   }
+ }
+
+ let percent = count / (canvas.width * canvas.height);
+
+ if(percent > 0.4){
+   revealed = true;
+   document.getElementById("question1").style.display="block";
+ }
+}
 
 
 // ------- QUIZ ---------
@@ -151,6 +79,3 @@ function showGift(){
 }
 
 </script>
-
-</body>
-</html>
