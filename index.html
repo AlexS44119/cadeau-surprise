@@ -2,245 +2,334 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Découvre ton cadeau 🎁</title>
+<title>Ticket Cadeau Surprise 🎁</title>
 
 <style>
-/* --- CENTRAGE FLEXBOX --- */
-html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
+
+/* ---------- FOND ANIME ---------- */
+body{
+ margin:0;
+ font-family:Arial;
+ height:100vh;
+ display:flex;
+ justify-content:center;
+ align-items:center;
+ background:linear-gradient(135deg,#667eea,#764ba2);
+ overflow:hidden;
 }
 
-body {
-  display: flex;
-  flex-direction: column;
-  justify-content: center; /* centre verticalement */
-  align-items: center;     /* centre horizontalement */
-  font-family: Arial;
-  background: #f5f5f5;
-  overflow-x: hidden;
-  text-align: center;
+/* petites particules */
+body::before{
+ content:"";
+ position:absolute;
+ width:200%;
+ height:200%;
+ background-image: radial-gradient(white 1px, transparent 1px);
+ background-size:40px 40px;
+ opacity:0.15;
+ animation:move 60s linear infinite;
 }
 
-/* --- CONTAINER SCRATCH --- */
-#scratch-container {
-  width: 90vw;        /* occupe 90% de l'écran */
-  max-width: 500px;   /* limite sur grand écran */
-  aspect-ratio: 5/3;  /* proportion 500x300 */
-  margin: 10px auto;
+@keyframes move{
+ from{transform:translate(0,0)}
+ to{transform:translate(-500px,-500px)}
 }
 
-canvas {
-  width: 100%;
-  height: 100%;
-  border-radius: 15px;
-  cursor: pointer;
-  display: block;
+/* ---------- CARTE ---------- */
+.ticket{
+ width:90vw;
+ max-width:520px;
+ background:white;
+ border-radius:20px;
+ padding:25px;
+ text-align:center;
+ box-shadow:0 25px 60px rgba(0,0,0,0.4);
+ animation:openTicket 1.2s ease;
 }
 
-/* --- QUESTIONS ET RESULTAT --- */
-#question1, #question2, #revealBtn, #result {
-  display: none;
-  margin-top: 20px;
-  opacity: 0;
-  transition: opacity 0.5s ease;
+@keyframes openTicket{
+ from{
+   transform:scale(0.7) rotateX(50deg);
+   opacity:0;
+ }
+ to{
+   transform:scale(1) rotateX(0);
+   opacity:1;
+ }
 }
 
-button {
-  padding: 12px 18px;
-  margin: 8px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  background: #4CAF50;
-  color: white;
-  font-size: 16px;
+/* ---------- SCRATCH ---------- */
+#scratch-container{
+ width:100%;
+ aspect-ratio:5/3;
+ margin-top:10px;
 }
 
-button:hover {
-  background: #45a049;
+canvas{
+ width:100%;
+ height:100%;
+ border-radius:15px;
 }
 
-img {
-  max-width: 90%;
-  border-radius: 12px;
-  margin-top: 20px;
+/* ---------- TEXTE ---------- */
+h2{
+ margin-top:0;
 }
 
-/* --- CONFETTIS --- */
-.confetti {
-  position: fixed;
-  width: 10px;
-  height: 10px;
-  background: red;
-  top: 0;
-  z-index: 9999;
-  pointer-events: none;
+h3{
+ font-size:26px;
 }
+
+p{
+ font-size:20px;
+}
+
+/* ---------- QUESTIONS ---------- */
+#question1,#question2,#revealBtn,#result{
+ display:none;
+ opacity:0;
+ transition:0.5s;
+}
+
+/* ---------- BOUTONS ---------- */
+button{
+ font-size:20px;
+ padding:14px 22px;
+ margin:8px;
+ border:none;
+ border-radius:12px;
+ cursor:pointer;
+ background:linear-gradient(135deg,#667eea,#764ba2);
+ color:white;
+ transition:0.2s;
+}
+
+button:hover{
+ transform:scale(1.05);
+}
+
+/* ---------- IMAGE CADEAU ---------- */
+#result img{
+ width:100%;
+ border-radius:15px;
+ margin-top:15px;
+ animation:zoom 1s ease;
+}
+
+@keyframes zoom{
+ from{transform:scale(0.6);opacity:0}
+ to{transform:scale(1);opacity:1}
+}
+
+/* ---------- CONFETTIS ---------- */
+.confetti{
+ position:fixed;
+ width:10px;
+ height:10px;
+ top:0;
+ pointer-events:none;
+ z-index:9999;
+}
+
 </style>
 </head>
 
 <body>
 
-<h2>Gratte pour découvrir ton cadeau 🎁</h2>
+<div class="ticket">
+
+<h2 id="title">🎁 Gratte pour découvrir ton cadeau 🎁</h2>
 
 <div id="scratch-container">
-  <canvas id="scratch"></canvas>
+<canvas id="scratch"></canvas>
 </div>
 
 <div id="question1">
-  <h3>Question 1 :</h3>
-  <p>Pour qui chanterais-tu : [...] Le Rouge et Noir, l’Europe les jalouses
+<h3>Question 1</h3>
+<p>Pour qui chanterais-tu : [...] Le Rouge et Noir, l’Europe les jalouses
 C’est la couleur de l’unique vainqueur [...] ?</p>
-  <button onclick="checkQ1(false)">Perpignan</button>
-  <button onclick="checkQ1(true)">Stade Toulousain</button>
-  <button onclick="checkQ1(false)">Saint-Marin</button>
+
+<button onclick="checkQ1(false)">Perpignan</button>
+<button onclick="checkQ1(true)">Stade Toulousain</button>
+<button onclick="checkQ1(false)">Saint-Marin</button>
 </div>
 
 <div id="question2">
-  <h3>Question 2 :</h3>
-  <p>Si tu devais te faire monter en l'air, qu'elle serais le choix le moins douloureux ?</p>
-  <button onclick="checkQ2(true)">Air Force One</button>
-  <button onclick="checkQ2(false)">Vincent Mc Doom</button>
-  <button onclick="checkQ2(false)">benoit saint denis</button>
+<h3>Question 2</h3>
+<p>Si tu devais te faire monter en l'air, qu'elle serais le choix le moins douloureux ?</p>
+
+<button onclick="checkQ2(true)">Air Force One</button>
+<button onclick="checkQ2(false)">Vincent Mc Doom</button>
+<button onclick="checkQ2(false)">Benoit Saint Denis</button>
 </div>
 
 <div id="revealBtn">
-  <button onclick="showGift()">🎁 Révéler le cadeau</button>
+<button onclick="showGift()">🎁 Révéler le cadeau</button>
 </div>
 
 <div id="result">
-  <h2>Surprise !</h2>
-  <img src="cadeau.jpg">
+<h2>✨ Surprise ! ✨</h2>
+<img src="cadeau.jpg">
+</div>
+
 </div>
 
 <script>
-// ------- SCRATCH ---------
-const canvas = document.getElementById("scratch");
-const ctx = canvas.getContext("2d");
-let scratching = false;
-let revealed = false;
 
-// --- RESPONSIVE ---
+/* SCRATCH */
+const canvas=document.getElementById("scratch");
+const ctx=canvas.getContext("2d");
+
+let scratching=false;
+let revealed=false;
+
 function resizeCanvas(){
-  canvas.width = canvas.clientWidth;
-  canvas.height = canvas.clientHeight;
-  drawOverlay();
+ canvas.width=canvas.clientWidth;
+ canvas.height=canvas.clientHeight;
+ drawOverlay();
 }
-window.addEventListener('resize', resizeCanvas);
+window.addEventListener("resize",resizeCanvas);
 resizeCanvas();
 
 function drawOverlay(){
-  ctx.globalCompositeOperation = "source-over";
-  ctx.fillStyle = "#999";
-  ctx.fillRect(0,0,canvas.width,canvas.height);
+ ctx.globalCompositeOperation="source-over";
+ ctx.fillStyle="#999";
+ ctx.fillRect(0,0,canvas.width,canvas.height);
 
-  ctx.fillStyle = "white";
-  ctx.font = (canvas.width/12) + "px Arial";
-  ctx.fillText("GRATTE ICI", canvas.width/4, canvas.height/2);
+ ctx.fillStyle="white";
+ ctx.font=(canvas.width/12)+"px Arial";
+ ctx.fillText("GRATTE ICI",canvas.width/4,canvas.height/2);
 }
 
-// --- Desktop ---
-canvas.addEventListener("mousedown", ()=> scratching = true);
-canvas.addEventListener("mouseup", ()=> scratching = false);
-canvas.addEventListener("mousemove", e=>{
-  if(!scratching) return;
-  scratch(e.offsetX, e.offsetY);
+/* souris */
+canvas.addEventListener("mousedown",()=>scratching=true);
+canvas.addEventListener("mouseup",()=>scratching=false);
+canvas.addEventListener("mousemove",e=>{
+ if(!scratching) return;
+ scratch(e.offsetX,e.offsetY);
 });
 
-// --- Mobile ---
-canvas.addEventListener("touchstart", e=>{
-  scratching = true;
-  const rect = canvas.getBoundingClientRect();
-  const touch = e.touches[0];
-  scratch(touch.clientX - rect.left, touch.clientY - rect.top);
-  e.preventDefault();
+/* tactile */
+canvas.addEventListener("touchstart",e=>{
+ scratching=true;
+ const rect=canvas.getBoundingClientRect();
+ const t=e.touches[0];
+ scratch(t.clientX-rect.left,t.clientY-rect.top);
+ e.preventDefault();
 });
-canvas.addEventListener("touchmove", e=>{
-  if(!scratching) return;
-  const rect = canvas.getBoundingClientRect();
-  const touch = e.touches[0];
-  scratch(touch.clientX - rect.left, touch.clientY - rect.top);
-  e.preventDefault();
-});
-canvas.addEventListener("touchend", e=>{ scratching = false; });
 
-// --- Grattage effet poudre ---
+canvas.addEventListener("touchmove",e=>{
+ if(!scratching) return;
+ const rect=canvas.getBoundingClientRect();
+ const t=e.touches[0];
+ scratch(t.clientX-rect.left,t.clientY-rect.top);
+ e.preventDefault();
+});
+
+canvas.addEventListener("touchend",()=>scratching=false);
+
+/* effet poudre */
 function scratch(x,y){
-  for(let i=0;i<5;i++){
-    const rx = x + (Math.random()*20-10);
-    const ry = y + (Math.random()*20-10);
-    ctx.globalCompositeOperation = "destination-out";
-    ctx.beginPath();
-    ctx.arc(rx, ry, Math.random()*10+5, 0, Math.PI*2);
-    ctx.fill();
-  }
-  checkScratch();
+ for(let i=0;i<5;i++){
+  ctx.globalCompositeOperation="destination-out";
+  ctx.beginPath();
+  ctx.arc(
+    x+(Math.random()*20-10),
+    y+(Math.random()*20-10),
+    Math.random()*12+6,
+    0,Math.PI*2
+  );
+  ctx.fill();
+ }
+ checkScratch();
 }
 
-// --- Vérification 85% ---
+/* verification 85% */
 function checkScratch(){
-  if(revealed) return;
-  const pixels = ctx.getImageData(0,0,canvas.width,canvas.height);
-  let count = 0;
-  for(let i=0;i<pixels.data.length;i+=4){
-    if(pixels.data[i+3]===0) count++;
-  }
-  let percent = count / (canvas.width*canvas.height);
-  if(percent>0.85){
-    revealed = true;
-    fadeIn(document.getElementById("question1"));
-  }
+ if(revealed) return;
+
+ const pixels=ctx.getImageData(0,0,canvas.width,canvas.height);
+ let count=0;
+
+ for(let i=0;i<pixels.data.length;i+=4){
+  if(pixels.data[i+3]==0) count++;
+ }
+
+ let percent=count/(canvas.width*canvas.height);
+
+ if(percent>0.85){
+  revealed=true;
+
+  document.getElementById("scratch-container").style.display="none";
+  document.getElementById("title").style.display="none";
+
+  fadeIn(question1);
+ }
 }
 
-// --- Fade in/out ---
+/* transitions */
 function fadeIn(el){
-  el.style.display="block";
-  setTimeout(()=> el.style.opacity=1,10);
-}
-function fadeOut(el, callback){
-  el.style.opacity=0;
-  setTimeout(()=>{ el.style.display="none"; if(callback) callback(); },500);
+ el.style.display="block";
+ setTimeout(()=>el.style.opacity=1,10);
 }
 
-// --- QUIZ ---
-function checkQ1(correct){
-  if(correct){
-    fadeOut(document.getElementById("question1"),()=>fadeIn(document.getElementById("question2")));
-  } else { alert("Mauvaise réponse 😄"); }
-}
-function checkQ2(correct){
-  if(correct){
-    fadeOut(document.getElementById("question2"),()=>fadeIn(document.getElementById("revealBtn")));
-  } else { alert("Presque !"); }
+function fadeOut(el,cb){
+ el.style.opacity=0;
+ setTimeout(()=>{
+  el.style.display="none";
+  if(cb) cb();
+ },500);
 }
 
-// --- Révélation cadeau + confettis ---
+/* quiz */
+function checkQ1(ok){
+ if(ok){
+  fadeOut(question1,()=>fadeIn(question2));
+ }else alert("Presque !");
+}
+
+function checkQ2(ok){
+ if(ok){
+  fadeOut(question2,()=>fadeIn(revealBtn));
+ }else alert("Pas loin !");
+}
+
+/* cadeau */
 function showGift(){
-  fadeOut(document.getElementById("revealBtn"),()=>{ fadeIn(document.getElementById("result")); createConfetti(); });
+ fadeOut(revealBtn,()=>{
+  fadeIn(result);
+  createConfetti();
+ });
 }
 
+/* confettis */
 function createConfetti(){
-  for(let i=0;i<100;i++){
-    const c = document.createElement('div');
-    c.className='confetti';
-    c.style.left=Math.random()*window.innerWidth+'px';
-    c.style.background=`hsl(${Math.random()*360},100%,50%)`;
-    document.body.appendChild(c);
-    animateConfetti(c);
-  }
+ for(let i=0;i<120;i++){
+  const c=document.createElement("div");
+  c.className="confetti";
+  c.style.left=Math.random()*window.innerWidth+"px";
+  c.style.background=`hsl(${Math.random()*360},100%,50%)`;
+  document.body.appendChild(c);
+
+  animateConfetti(c);
+ }
 }
+
 function animateConfetti(el){
-  let top = 0;
-  const fall = setInterval(()=>{
-    top += Math.random()*5+2;
-    el.style.top = top+'px';
-    if(top>window.innerHeight){ el.remove(); clearInterval(fall); }
-  },20);
+ let top=0;
+
+ const fall=setInterval(()=>{
+  top+=Math.random()*5+2;
+  el.style.top=top+"px";
+
+  if(top>window.innerHeight){
+   el.remove();
+   clearInterval(fall);
+  }
+ },20);
 }
+
 </script>
 
 </body>
 </html>
-
