@@ -1,12 +1,9 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Ticket Cadeau 🎁</title>
-
 <style>
 
 /* ---------- FOND ANIMÉ ---------- */
@@ -96,21 +93,43 @@ button{
  display:block;
 }
 
-/* ---------- BILLET AVION ---------- */
+/* ---------- BILLET ULTRA RÉALISTE ---------- */
 .boarding-pass{
  background:white;
- border-radius:18px;
- padding:25px;
+ border-radius:12px;
+ padding:20px;
  margin-top:20px;
- box-shadow:0 20px 50px rgba(0,0,0,0.25);
+ box-shadow:0 10px 40px rgba(0,0,0,0.3);
  text-align:left;
- animation:ticketReveal 1s ease;
+ transform:scaleY(0);
+ transform-origin:top;
+ animation:ticketUnfold 1s ease forwards;
+ position:relative;
+ overflow:hidden;
+}
+
+/* bandes colorées comme un vrai billet */
+.boarding-pass::before{
+ content:"";
+ position:absolute;
+ top:0; left:0;
+ width:100%; height:8px;
+ background:linear-gradient(90deg,#667eea,#ff7eb3);
+}
+
+.boarding-pass::after{
+ content:"";
+ position:absolute;
+ bottom:0; left:0;
+ width:100%; height:8px;
+ background:linear-gradient(90deg,#ff7eb3,#764ba2);
 }
 
 .flight-title{
  text-align:center;
  font-size:26px;
- margin-bottom:20px;
+ margin:15px 0;
+ font-weight:bold;
 }
 
 .flight-row{
@@ -126,15 +145,28 @@ button{
  color:#777;
 }
 
-@keyframes ticketReveal{
- from{
-  transform:scale(0.7) rotateY(90deg);
-  opacity:0;
- }
- to{
-  transform:scale(1) rotateY(0);
-  opacity:1;
- }
+/* QR CODE */
+.qr-code{
+ width:80px;
+ height:80px;
+ background:white;
+ border:2px solid #333;
+ float:right;
+ margin-top:-90px;
+ margin-right:10px;
+ display:flex;
+ justify-content:center;
+ align-items:center;
+ font-size:10px;
+ color:#333;
+ text-align:center;
+}
+
+/* animation billet */
+@keyframes ticketUnfold{
+ 0%{transform:scaleY(0); opacity:0;}
+ 60%{transform:scaleY(1.05); opacity:1;}
+ 100%{transform:scaleY(1);}
 }
 
 /* ---------- IMAGE CADEAU ---------- */
@@ -148,7 +180,6 @@ button{
  transition:0.8s ease;
 }
 
-/* effet apparition cadeau */
 .gift-img.show{
  opacity:1;
  transform:scale(1);
@@ -201,7 +232,7 @@ C’est la couleur de l’unique vainqueur [...] ?</p>
 
 <div id="result">
 
-<div class="boarding-pass">
+<div class="boarding-pass" id="boardingPass">
 
 <div class="flight-title">✈️ Billet Surprise</div>
 
@@ -224,6 +255,8 @@ C’est la couleur de l’unique vainqueur [...] ?</p>
 <span>PORTE</span>
 <strong>VIP</strong>
 </div>
+
+<div class="qr-code">QR CODE<br>SCANNER</div>
 
 </div>
 
@@ -366,9 +399,11 @@ function showGift(){
  fadeOut(revealBtn,()=>{
   fadeIn(result);
 
+  // billet déplié via CSS
+
   // apparition image cadeau après billet
   const gift = document.getElementById("giftImage");
-  setTimeout(()=>gift.classList.add("show"),600);
+  setTimeout(()=>gift.classList.add("show"),1000);
 
   createConfetti();
  });
@@ -400,7 +435,5 @@ function animateConfetti(el){
 }
 
 </script>
-
 </body>
 </html>
-
