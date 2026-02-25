@@ -1,134 +1,95 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+
 <meta charset="UTF-8">
-<title>Ticket Cadeau Surprise 🎁</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Ticket Cadeau 🎁</title>
 
 <style>
 
-/* ---------- FOND ANIME ---------- */
+/* ----- FOND ----- */
 body{
  margin:0;
  font-family:Arial;
- height:100vh;
- display:flex;
- justify-content:center;
- align-items:center;
  background:linear-gradient(135deg,#667eea,#764ba2);
- overflow:hidden;
 }
 
-/* petites particules */
-body::before{
- content:"";
- position:absolute;
- width:200%;
- height:200%;
- background-image: radial-gradient(white 1px, transparent 1px);
- background-size:40px 40px;
- opacity:0.15;
- animation:move 60s linear infinite;
-}
-
-@keyframes move{
- from{transform:translate(0,0)}
- to{transform:translate(-500px,-500px)}
-}
-
-/* ---------- CARTE ---------- */
+/* ----- CARTE ----- */
 .ticket{
- width:90vw;
- max-width:520px;
+ width:100%;
+ max-width:600px;
+ min-height:100vh;
+ margin:auto;
  background:white;
- border-radius:20px;
  padding:25px;
+ box-sizing:border-box;
  text-align:center;
- box-shadow:0 25px 60px rgba(0,0,0,0.4);
- animation:openTicket 1.2s ease;
 }
 
-@keyframes openTicket{
- from{
-   transform:scale(0.7) rotateX(50deg);
-   opacity:0;
- }
- to{
-   transform:scale(1) rotateX(0);
-   opacity:1;
- }
-}
-
-/* ---------- SCRATCH ---------- */
+/* ----- SCRATCH ----- */
 #scratch-container{
  width:100%;
- aspect-ratio:5/3;
- margin-top:10px;
+ aspect-ratio:4/3;
+ margin-top:20px;
 }
 
 canvas{
  width:100%;
  height:100%;
  border-radius:15px;
+ touch-action:none;
 }
 
-/* ---------- TEXTE ---------- */
+/* ----- TEXTES ----- */
 h2{
+ font-size:28px;
  margin-top:0;
 }
 
 h3{
- font-size:26px;
+ font-size:24px;
 }
 
 p{
  font-size:20px;
 }
 
-/* ---------- QUESTIONS ---------- */
+/* ----- QUESTIONS ----- */
 #question1,#question2,#revealBtn,#result{
  display:none;
  opacity:0;
  transition:0.5s;
 }
 
-/* ---------- BOUTONS ---------- */
+/* ----- BOUTONS ----- */
 button{
- font-size:20px;
- padding:14px 22px;
- margin:8px;
+ width:90%;
+ font-size:22px;
+ padding:18px;
+ margin:10px auto;
  border:none;
- border-radius:12px;
- cursor:pointer;
+ border-radius:14px;
  background:linear-gradient(135deg,#667eea,#764ba2);
  color:white;
- transition:0.2s;
+ display:block;
 }
 
-button:hover{
- transform:scale(1.05);
-}
-
-/* ---------- IMAGE CADEAU ---------- */
-#result img{
+/* ----- IMAGE CADEAU ----- */
+img{
  width:100%;
  border-radius:15px;
  margin-top:15px;
- animation:zoom 1s ease;
 }
 
-@keyframes zoom{
- from{transform:scale(0.6);opacity:0}
- to{transform:scale(1);opacity:1}
-}
-
-/* ---------- CONFETTIS ---------- */
+/* ----- CONFETTIS ----- */
 .confetti{
  position:fixed;
  width:10px;
  height:10px;
  top:0;
  pointer-events:none;
- z-index:9999;
 }
 
 </style>
@@ -183,6 +144,7 @@ const ctx=canvas.getContext("2d");
 let scratching=false;
 let revealed=false;
 
+/* responsive */
 function resizeCanvas(){
  canvas.width=canvas.clientWidth;
  canvas.height=canvas.clientHeight;
@@ -191,17 +153,46 @@ function resizeCanvas(){
 window.addEventListener("resize",resizeCanvas);
 resizeCanvas();
 
+/* overlay */
 function drawOverlay(){
  ctx.globalCompositeOperation="source-over";
  ctx.fillStyle="#999";
  ctx.fillRect(0,0,canvas.width,canvas.height);
 
  ctx.fillStyle="white";
- ctx.font=(canvas.width/12)+"px Arial";
+ ctx.font=(canvas.width/10)+"px Arial";
  ctx.fillText("GRATTE ICI",canvas.width/4,canvas.height/2);
 }
 
-/* souris */
+/* position doigt */
+function getTouchPos(e){
+ const rect=canvas.getBoundingClientRect();
+ return{
+  x:e.touches[0].clientX-rect.left,
+  y:e.touches[0].clientY-rect.top
+ };
+}
+
+/* MOBILE FIX SCROLL */
+canvas.addEventListener("touchstart",e=>{
+ scratching=true;
+ e.preventDefault();
+},{passive:false});
+
+canvas.addEventListener("touchmove",e=>{
+ if(!scratching) return;
+
+ const pos=getTouchPos(e);
+ scratch(pos.x,pos.y);
+
+ e.preventDefault();
+},{passive:false});
+
+canvas.addEventListener("touchend",()=>{
+ scratching=false;
+});
+
+/* DESKTOP */
 canvas.addEventListener("mousedown",()=>scratching=true);
 canvas.addEventListener("mouseup",()=>scratching=false);
 canvas.addEventListener("mousemove",e=>{
@@ -209,28 +200,9 @@ canvas.addEventListener("mousemove",e=>{
  scratch(e.offsetX,e.offsetY);
 });
 
-/* tactile */
-canvas.addEventListener("touchstart",e=>{
- scratching=true;
- const rect=canvas.getBoundingClientRect();
- const t=e.touches[0];
- scratch(t.clientX-rect.left,t.clientY-rect.top);
- e.preventDefault();
-});
-
-canvas.addEventListener("touchmove",e=>{
- if(!scratching) return;
- const rect=canvas.getBoundingClientRect();
- const t=e.touches[0];
- scratch(t.clientX-rect.left,t.clientY-rect.top);
- e.preventDefault();
-});
-
-canvas.addEventListener("touchend",()=>scratching=false);
-
 /* effet poudre */
 function scratch(x,y){
- for(let i=0;i<5;i++){
+ for(let i=0;i<6;i++){
   ctx.globalCompositeOperation="destination-out";
   ctx.beginPath();
   ctx.arc(
@@ -244,7 +216,7 @@ function scratch(x,y){
  checkScratch();
 }
 
-/* verification 85% */
+/* vérification 85% */
 function checkScratch(){
  if(revealed) return;
 
@@ -260,8 +232,8 @@ function checkScratch(){
  if(percent>0.85){
   revealed=true;
 
-  document.getElementById("scratch-container").style.display="none";
-  document.getElementById("title").style.display="none";
+  document.getElementById("scratch-container").remove();
+  document.getElementById("title").remove();
 
   fadeIn(question1);
  }
@@ -310,14 +282,12 @@ function createConfetti(){
   c.style.left=Math.random()*window.innerWidth+"px";
   c.style.background=`hsl(${Math.random()*360},100%,50%)`;
   document.body.appendChild(c);
-
   animateConfetti(c);
  }
 }
 
 function animateConfetti(el){
  let top=0;
-
  const fall=setInterval(()=>{
   top+=Math.random()*5+2;
   el.style.top=top+"px";
