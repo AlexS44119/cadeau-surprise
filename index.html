@@ -9,14 +9,33 @@
 
 <style>
 
-/* ----- FOND ----- */
+/* ---------- FOND ANIMÉ ---------- */
 body{
  margin:0;
  font-family:Arial;
- background:linear-gradient(135deg,#667eea,#764ba2);
+ background: linear-gradient(135deg,#667eea,#764ba2,#ff7eb3);
+ background-size: 400% 400%;
+ animation: gradientMove 15s ease infinite;
 }
 
-/* ----- CARTE ----- */
+@keyframes gradientMove{
+ 0%{background-position:0% 50%;}
+ 50%{background-position:100% 50%;}
+ 100%{background-position:0% 50%;}
+}
+
+/* petites particules */
+body::after{
+ content:"";
+ position:fixed;
+ inset:0;
+ background-image: radial-gradient(white 1px, transparent 1px);
+ background-size:35px 35px;
+ opacity:0.15;
+ pointer-events:none;
+}
+
+/* ---------- CARTE ---------- */
 .ticket{
  width:100%;
  max-width:600px;
@@ -26,9 +45,10 @@ body{
  padding:25px;
  box-sizing:border-box;
  text-align:center;
+ border-radius:18px;
 }
 
-/* ----- SCRATCH ----- */
+/* ---------- SCRATCH ---------- */
 #scratch-container{
  width:100%;
  aspect-ratio:4/3;
@@ -42,7 +62,7 @@ canvas{
  touch-action:none;
 }
 
-/* ----- TEXTES ----- */
+/* ---------- TEXTES ---------- */
 h2{
  font-size:28px;
  margin-top:0;
@@ -56,14 +76,14 @@ p{
  font-size:20px;
 }
 
-/* ----- QUESTIONS ----- */
+/* ---------- QUESTIONS ---------- */
 #question1,#question2,#revealBtn,#result{
  display:none;
  opacity:0;
  transition:0.5s;
 }
 
-/* ----- BOUTONS ----- */
+/* ---------- BOUTONS ---------- */
 button{
  width:90%;
  font-size:22px;
@@ -76,14 +96,48 @@ button{
  display:block;
 }
 
-/* ----- IMAGE CADEAU ----- */
-img{
- width:100%;
- border-radius:15px;
- margin-top:15px;
+/* ---------- BILLET AVION ---------- */
+.boarding-pass{
+ background:white;
+ border-radius:18px;
+ padding:25px;
+ margin-top:20px;
+ box-shadow:0 20px 50px rgba(0,0,0,0.25);
+ text-align:left;
+ animation:ticketReveal 1s ease;
 }
 
-/* ----- CONFETTIS ----- */
+.flight-title{
+ text-align:center;
+ font-size:26px;
+ margin-bottom:20px;
+}
+
+.flight-row{
+ display:flex;
+ justify-content:space-between;
+ margin:12px 0;
+ font-size:20px;
+ border-bottom:1px dashed #ccc;
+ padding-bottom:8px;
+}
+
+.flight-row span{
+ color:#777;
+}
+
+@keyframes ticketReveal{
+ from{
+  transform:scale(0.7) rotateY(90deg);
+  opacity:0;
+ }
+ to{
+  transform:scale(1) rotateY(0);
+  opacity:1;
+ }
+}
+
+/* ---------- CONFETTIS ---------- */
 .confetti{
  position:fixed;
  width:10px;
@@ -129,8 +183,33 @@ C’est la couleur de l’unique vainqueur [...] ?</p>
 </div>
 
 <div id="result">
-<h2>✨ Surprise ! ✨</h2>
-<img src="cadeau.jpg">
+
+<div class="boarding-pass">
+
+<div class="flight-title">✈️ Billet Surprise</div>
+
+<div class="flight-row">
+<span>PASSAGER</span>
+<strong>Surprise</strong>
+</div>
+
+<div class="flight-row">
+<span>DESTINATION</span>
+<strong>ROME</strong>
+</div>
+
+<div class="flight-row">
+<span>DÉPART</span>
+<strong>Bientôt</strong>
+</div>
+
+<div class="flight-row">
+<span>PORTE</span>
+<strong>VIP</strong>
+</div>
+
+</div>
+
 </div>
 
 </div>
@@ -173,7 +252,7 @@ function getTouchPos(e){
  };
 }
 
-/* MOBILE FIX SCROLL */
+/* MOBILE FIX */
 canvas.addEventListener("touchstart",e=>{
  scratching=true;
  e.preventDefault();
@@ -181,16 +260,12 @@ canvas.addEventListener("touchstart",e=>{
 
 canvas.addEventListener("touchmove",e=>{
  if(!scratching) return;
-
  const pos=getTouchPos(e);
  scratch(pos.x,pos.y);
-
  e.preventDefault();
 },{passive:false});
 
-canvas.addEventListener("touchend",()=>{
- scratching=false;
-});
+canvas.addEventListener("touchend",()=>scratching=false);
 
 /* DESKTOP */
 canvas.addEventListener("mousedown",()=>scratching=true);
