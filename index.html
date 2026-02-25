@@ -137,6 +137,23 @@ button{
  }
 }
 
+/* ---------- IMAGE CADEAU ---------- */
+.gift-img{
+ width:100%;
+ margin-top:20px;
+ border-radius:14px;
+ box-shadow:0 10px 25px rgba(0,0,0,0.2);
+ opacity:0;
+ transform:scale(0.6);
+ transition:0.8s ease;
+}
+
+/* effet apparition cadeau */
+.gift-img.show{
+ opacity:1;
+ transform:scale(1);
+}
+
 /* ---------- CONFETTIS ---------- */
 .confetti{
  position:fixed;
@@ -190,17 +207,17 @@ C’est la couleur de l’unique vainqueur [...] ?</p>
 
 <div class="flight-row">
 <span>PASSAGER</span>
-<strong>JORDAN PICHOT</strong>
+<strong>Surprise</strong>
 </div>
 
 <div class="flight-row">
 <span>DESTINATION</span>
-<strong>TOULOUSE</strong>
+<strong>ROME</strong>
 </div>
 
 <div class="flight-row">
 <span>DÉPART</span>
-<strong>03/04/2026</strong>
+<strong>Bientôt</strong>
 </div>
 
 <div class="flight-row">
@@ -209,6 +226,9 @@ C’est la couleur de l’unique vainqueur [...] ?</p>
 </div>
 
 </div>
+
+<!-- IMAGE CADEAU -->
+<img src="cadeau.jpg" class="gift-img" id="giftImage">
 
 </div>
 
@@ -341,10 +361,15 @@ function checkQ2(ok){
  }else alert("Pas loin !");
 }
 
-/* cadeau */
+/* cadeau + billet */
 function showGift(){
  fadeOut(revealBtn,()=>{
   fadeIn(result);
+
+  // apparition image cadeau après billet
+  const gift = document.getElementById("giftImage");
+  setTimeout(()=>gift.classList.add("show"),600);
+
   createConfetti();
  });
 }
@@ -378,4 +403,3 @@ function animateConfetti(el){
 
 </body>
 </html>
-
